@@ -109,7 +109,7 @@ export default function Orders() {
                   <div className="flex items-center justify-between font-bold">
                     <span>Total</span>
                     <span className="text-primary">
-                      ${order.total_amount.toFixed(2)}
+                      ${Number(order.total_amount).toFixed(2)}
                     </span>
                   </div>
                 </div>

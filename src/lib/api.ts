@@ -21,7 +21,7 @@ export interface Product {
   id: number;
   name: string;
   description: string;
-  price: number;
+  price: number | string;
   stock_quantity: number;
   category_id: number;
   image_url?: string;
@@ -56,6 +56,14 @@ export interface OrderItem {
   quantity: number;
   price: number;
   product?: Product;
+}
+
+export interface ProductPaginatedResponse {
+  products: Product[];
+  total: number;
+  page: number;
+  limit: number;
+  total_pages: number;
 }
 
 class ApiClient {
@@ -109,20 +117,43 @@ class ApiClient {
     });
   }
 
-  async register(email: string, username: string, password: string): Promise<User> {
+  async register(
+    email: string,
+    username: string,
+    password: string,
+    location: string = "",
+    paymentOptions: string = "Card",
+    role: string = "User"
+  ): Promise<User> {
     return this.request<User>('/user/registration', {
       method: 'POST',
-      body: JSON.stringify({ email, username, password }),
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+        location,
+        payment_options: paymentOptions,
+        role
+      }),
     });
   }
+
 
   async getCurrentUser(): Promise<User> {
     return this.request<User>('/auth/me');
   }
 
   // Product endpoints
-  async getProducts(): Promise<Product[]> {
-    return this.request<Product[]>('/products');
+  async getProducts(page: number = 1, limit: number = 100): Promise<Product[]> {
+    try {
+      const response = await this.request<ProductPaginatedResponse>(
+        `/products?page=${page}&limit=${limit}`
+      );
+      return Array.isArray(response.products) ? response.products : [];
+    } catch (error) {
+      console.error('Error in getProducts:', error);
+      return [];
+    }
   }
 
   async getProduct(id: number): Promise<Product> {
@@ -136,11 +167,11 @@ class ApiClient {
 
   // Cart endpoints
   async getCart(): Promise<CartItem[]> {
-    return this.request<CartItem[]>('/cart');
+    return this.request<CartItem[]>('/cart/me');
   }
 
   async addToCart(productId: number, quantity: number = 1): Promise<CartItem> {
-    return this.request<CartItem>('/cart', {
+    return this.request<CartItem>('/cart/add', {
       method: 'POST',
       body: JSON.stringify({ product_id: productId, quantity }),
     });

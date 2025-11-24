@@ -47,7 +47,7 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.description}
           </p>
           <p className="text-lg font-bold text-primary mt-2">
-            ${product.price.toFixed(2)}
+            ${Number(product.price).toFixed(2)}
           </p>
           {product.stock_quantity > 0 ? (
             <p className="text-xs text-muted-foreground mt-1">

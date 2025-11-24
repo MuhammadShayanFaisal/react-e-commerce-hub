@@ -92,7 +92,7 @@ export default function ProductDetail() {
         <div className="flex flex-col">
           <h1 className="text-4xl font-bold mb-4">{product.name}</h1>
           <p className="text-3xl font-bold text-primary mb-6">
-            ${product.price.toFixed(2)}
+            ${Number(product.price).toFixed(2)}
           </p>
           
           <div className="mb-6">

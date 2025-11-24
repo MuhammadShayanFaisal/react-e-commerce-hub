@@ -19,6 +19,7 @@ export default function Home() {
       setFeaturedProducts(products.slice(0, 8));
     } catch (error) {
       console.error('Failed to load products:', error);
+      setFeaturedProducts([]);
     } finally {
       setLoading(false);
     }
